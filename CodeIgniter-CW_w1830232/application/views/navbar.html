@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Backbone.js Models and Views -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js"></script>
+    <!-- Use the full version of jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <style>
+        body {
+            padding-top: 112px; 
+        }
+        .navbar-custom {
+            background-color: rgba(0, 0, 0, 0.639); 
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1030; 
+            height: 112px;  
+        }
+        .navbar-custom .navbar-brand img {
+            width: 60px;
+            height: 60px;
+        }
+        .navbar-custom .navbar-nav .nav-link {
+            color: rgb(213, 179, 193);
+            padding: 20px; 
+            display: flex;
+            align-items: center;
+        }
+        .navbar-custom .form-control {
+            background-color: #e5e5e5;
+            height: 30px;  
+            font-size: 14px;  
+            padding: 5px 10px;  
+            width: 200px;  
+            color: black !important;  
+        }
+        .navbar-custom .form-control::placeholder {
+            color: black !important;  
+        }
+        .navbar-custom .form-control::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+            color: black !important;
+        }
+        .navbar-custom .form-control::-moz-placeholder { /* Firefox 19+ */
+            color: black !important;
+        }
+        .navbar-custom .form-control:-ms-input-placeholder { /* IE 10+ */
+            color: black !important;
+        }
+        .navbar-custom .form-control:-moz-placeholder { /* Firefox 18- */
+            color: black !important;
+        }
+        .navbar-custom {
+            font-size: 1.5rem;
+            color: rgb(237, 237, 237);
+            margin-left: 20px;
+        }
+        .navbar-custom .navbar-nav .nav-item img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .form-container {
+            margin-right: 20px;
+        }
+        .search-clock-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto; 
+        }
+        .btn-custom {
+            display: flex;
+            align-items: center;
+            color: white;
+            border: 1px solid white;
+            background-color: transparent;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .btn-custom i {
+            margin-right: 8px; 
+        }
+        .btn-custom:hover {
+            border-color: rgb(231, 226, 229);
+            background-color: #e5e5e5;
+            color: #000;
+        }
+        .suggestions {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            width: 200px; 
+            z-index: 1000;
+            max-height: 150px; 
+            overflow-y: auto;
+            font-size: 14px; 
+        }
+        .suggestion-item {
+            padding: 5px 10px; 
+            cursor: pointer;
+            color: black !important;  
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+        .navbar-brand-centered {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- navbar.html -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="<?= base_url('imgs/logo2.jpg') ?>" alt="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="btn btn-custom" href="<?= base_url('auth/login') ?>">
+                            <i class="fas fa-sign-in-alt"></i> Login/Register
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-custom" href="<?= base_url('post/createPost') ?>">
+                            <i class="fas fa-plus-circle"></i> Add Post
+                        </a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="btn btn-custom" href="<?= base_url('post/dashboard') ?>" >
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-custom" id="logoutButton" href="<?= base_url('auth/logout') ?>" disabled>
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+                <div class="search-clock-container ms-auto">
+                    <form class="d-flex form-container" id="searchForm">
+                        <div style="color:black;">
+                        <input class="form-control me-2" type="search" placeholder="Search Post" aria-label="Search" id="searchInput" style="color: black !important;">
+                        </div>
+                        <button class="btn btn-outline-light" type="submit">Search</button>
+                        <div class="suggestions" id="suggestions"></div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="navbar-brand-centered"><div style="font-size: 450%; font-style: italic; color: rgb(255, 255, 255);">TOON_world</div></div>
+        </div>
+    </nav>
+
+    <div class="container search-results" id="searchResults"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check login status and enable logout button
+            function checkLoginStatus() {
+                fetch("<?= base_url('auth/checkLoginStatus') ?>")
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.logged_in) {
+                            document.getElementById('logoutButton').removeAttribute('disabled');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            // Call the function on page load
+            checkLoginStatus();
+
+            // Search Model
+            var SearchModel = Backbone.Model.extend({
+                defaults: {
+                    caption: '',
+                    posts: []
+                }
+            });
+
+            // Search View
+            var SearchView = Backbone.View.extend({
+                el: '#searchForm',
+                events: {
+                    'submit': 'searchPost',
+                    'input #searchInput': 'showSuggestions'
+                },
+                initialize: function() {
+                    console.log('SearchView initialized');
+                    this.input = this.$('#searchInput');
+                    this.suggestions = this.$('#suggestions');
+                    this.resultsContainer = $('#searchResults');
+                    this.listenTo(this.model, 'change:posts', this.renderResults);
+                },
+                searchPost: function(event) {
+                    event.preventDefault();
+                    var caption = this.input.val();
+                    console.log('Search initiated with caption:', caption);
+                    if (caption) {
+                        fetch(`<?= base_url('post/getPostIdByCaption?caption=') ?>${encodeURIComponent(caption)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Search result:', data);
+                                if (data.post_id) {
+                                    window.location.href = `<?= base_url('comment/postComments/') ?>${data.post_id}`;
+                                } else {
+                                    alert('Post not found');
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+                },
+                showSuggestions: function() {
+                    var query = this.input.val();
+                    console.log('Fetching suggestions for:', query);
+                    if (query) {
+                        fetch(`<?= base_url('post/getPostCaptionsByQuery?query=') ?>${encodeURIComponent(query)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Suggestions:', data);
+                                this.renderSuggestions(data);
+                            })
+                            .catch(error => console.error('Error:', error));
+                    } else {
+                        this.suggestions.empty();
+                    }
+                },
+                renderSuggestions: function(data) {
+                    this.suggestions.empty();
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            var suggestionItem = $('<div>').addClass('suggestion-item').text(item.caption).data('postId', item.id);
+                            suggestionItem.on('click', () => {
+                                window.location.href = `<?= base_url('comment/postComments/') ?>${item.id}`;
+                            });
+                            this.suggestions.append(suggestionItem);
+                        });
+                    } else {
+                        this.suggestions.append($('<div>').addClass('suggestion-item').text('No suggestions found'));
+                    }
+                },
+                renderResults: function() {
+                    var posts = this.model.get('posts');
+                    this.resultsContainer.empty();
+                    if (posts.length > 0) {
+                        posts.forEach(post => {
+                            var item = $('<div>').addClass('result-item').text(post.caption);
+                            this.resultsContainer.append(item);
+                        });
+                    } else {
+                        this.resultsContainer.append($('<div>').addClass('result-item').text('No posts found'));
+                    }
+                }
+            });
+
+            // Ensure the search form element exists
+            if (document.getElementById('searchForm')) {
+                var searchModel = new SearchModel();
+                var searchView = new SearchView({ model: searchModel });
+            } else {
+                console.error('Search form element not found');
+            }
+        });
+    </script>
+</body>
+</html>
